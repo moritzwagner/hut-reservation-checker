@@ -16,12 +16,12 @@ on:
       dates:
         description: 'Date ranges JSON string (e.g. [{"arrivalDate":"11.07.2025","departureDate":"12.07.2025"}])'
         required: true
-        default: '[{"arrivalDate":"11.07.2025","departureDate":"12.07.2025"}]'
+        default: '[{"arrivalDate":"11.09.2026","departureDate":"13.11.2026"}]'
 
 env:  # Top-level defaults (used for cron runs)
-  DEFAULT_HUTS: '150'
-  DEFAULT_FREE_BEDS: '3'
-  DEFAULT_DATES: '[{"arrivalDate":"11.07.2025","departureDate":"12.07.2025"}, {"arrivalDate":"12.07.2025","departureDate":"13.07.2025"}]'
+  DEFAULT_HUTS: '108'
+  DEFAULT_FREE_BEDS: '1'
+  DEFAULT_DATES: '[{"arrivalDate":"11.09.2026","departureDate":"13.11.2026"}]'
 
 jobs:
   check-availability:
