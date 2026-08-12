@@ -1,7 +1,7 @@
 import os
 import json
 import requests
-from datetime import datetime, timedelta
+from datetime import datetime
 from time import sleep
 
 DISCORD_WEBHOOK_URL = os.environ.get("DISCORD_WEBHOOK_URL")
@@ -38,14 +38,10 @@ def expand_date_ranges(input_dates):
             print(f"Skipping date range where departure is not after arrival: {date_range}")
             continue
 
-        current_arrival = arrival_dt
-        while current_arrival < departure_dt:
-            current_departure = current_arrival + timedelta(days=1)
-            expanded_dates.append({
-                "arrivalDate": current_arrival.strftime(DATE_FORMAT),
-                "departureDate": current_departure.strftime(DATE_FORMAT)
-            })
-            current_arrival = current_departure
+        expanded_dates.append({
+            "arrivalDate": arrival_dt.strftime(DATE_FORMAT),
+            "departureDate": departure_dt.strftime(DATE_FORMAT)
+        })
 
     return expanded_dates
 
