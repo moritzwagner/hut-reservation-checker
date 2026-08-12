@@ -8,11 +8,11 @@ on:
       huts:
         description: 'Comma-separated hut IDs (e.g. 150,603)'
         required: true
-        default: '150'
+        default: '108'
       free_beds:
         description: 'Number of free beds required (e.g. 3)'
         required: true
-        default: '3'
+        default: '1'
       dates:
         description: 'Date ranges JSON string (e.g. [{"arrivalDate":"11.07.2025","departureDate":"12.07.2025"}])'
         required: true
