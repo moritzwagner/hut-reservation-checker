@@ -77,7 +77,7 @@ def check_availability(hut_id, hut_name, categories, arrival, departure):
                 print(f"{arrival}–{departure} | {hut_name} ({category_label}): Only {free_beds} beds availble — no notification.")
 
     except requests.RequestException as e:
-        print(f"Error checking availability for {hut_name} ({category_label}) {arrival}–{departure}: {e}")
+        print(f"Error checking availability for {hut_name} {arrival}–{departure}: {e}")
 
 def send_discord_notification(hut_name, arrival, departure, category_label, free_places):
     message = {
