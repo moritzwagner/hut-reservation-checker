@@ -68,12 +68,17 @@ def check_availability(hut_id, hut_name, categories, arrival, departure):
     url = f"{BASE_URL}/reservation/checkAvailability/{hut_id}"
 
     category_ids = [c["categoryID"] for c in categories]
-    peoplePerCategory = [{"categoryId": id, "people": 0} for id in category_ids]
+    peoplePerCategory = []
+    for index, category_id in enumerate(category_ids):
+        peoplePerCategory.append({
+            "categoryId": category_id,
+            "people": 1 if index == 0 else 0
+        })
 
     payload = {
         "arrivalDate": arrival,
         "departureDate": departure,
-        "numberOfPeople": 0,
+        "numberOfPeople": 1,
         "nextPossibleReservations": False,
         "peoplePerCategory": peoplePerCategory,
         "isWaitingListAccepted": False,
