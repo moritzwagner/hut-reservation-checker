@@ -1,6 +1,7 @@
 import os
 import json
 import requests
+from datetime import datetime, timedelta
 from time import sleep
 
 DISCORD_WEBHOOK_URL = os.environ.get("DISCORD_WEBHOOK_URL")
@@ -9,10 +10,44 @@ DATES_JSON = os.environ.get("DATES", "[]")  # e.g. '[{"arrivalDate":"11.07.2025"
 FREE_BEDS = os.environ.get("FREE_BEDS", "3")
 
 BASE_URL = "https://www.hut-reservation.org/api/v1"
+DATE_FORMAT = "%d.%m.%Y"
 
 # Parse input
 selected_hut_ids = [int(h.strip()) for h in HUTS.split(",") if h.strip().isdigit()]
 dates = json.loads(DATES_JSON)
+
+def expand_date_ranges(input_dates):
+    expanded_dates = []
+
+    for date_range in input_dates:
+        arrival = date_range.get("arrivalDate")
+        departure = date_range.get("departureDate")
+
+        if not arrival or not departure:
+            print(f"Skipping invalid date range: {date_range}")
+            continue
+
+        try:
+            arrival_dt = datetime.strptime(arrival, DATE_FORMAT)
+            departure_dt = datetime.strptime(departure, DATE_FORMAT)
+        except ValueError:
+            print(f"Skipping invalid date format in range: {date_range}")
+            continue
+
+        if departure_dt <= arrival_dt:
+            print(f"Skipping date range where departure is not after arrival: {date_range}")
+            continue
+
+        current_arrival = arrival_dt
+        while current_arrival < departure_dt:
+            current_departure = current_arrival + timedelta(days=1)
+            expanded_dates.append({
+                "arrivalDate": current_arrival.strftime(DATE_FORMAT),
+                "departureDate": current_departure.strftime(DATE_FORMAT)
+            })
+            current_arrival = current_departure
+
+    return expanded_dates
 
 def get_hut_info(hut_id):
     url = f"{BASE_URL}/reservation/hutInfo/{hut_id}"
@@ -95,7 +130,9 @@ if __name__ == "__main__":
     if not selected_hut_ids:
         print("No valid hut IDs provided.")
 
-    if not dates:
+    expanded_dates = expand_date_ranges(dates)
+
+    if not expanded_dates:
         print("No valid date ranges provided.")
 
 
@@ -116,7 +153,7 @@ if __name__ == "__main__":
             print(f"No visible categories found for {hut_name}")
             continue
 
-        for date in dates:
+        for date in expanded_dates:
             check_availability(
                 hut_id=hut_id,
                 hut_name=hut_name,
